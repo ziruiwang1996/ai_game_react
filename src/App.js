@@ -1,4 +1,5 @@
 import RoombaHome from "./Roomba/RoombaHome";
+import GomokuHome from "./Gomoku/GomokuHome";
 import GameCard from "./GameCard";
 import Header from "./Header";
 import roombaImage from './assets/roomba.jpg';
@@ -18,6 +19,14 @@ function App() {
         <RoombaHome/>
       </GameContext.Provider>
       );
+  }
+
+  if (playGomoku) {
+    return (
+      <GameContext.Provider value={{setPlayGomoku}}>
+        <GomokuHome/>
+      </GameContext.Provider>
+    );
   }
 
   return (

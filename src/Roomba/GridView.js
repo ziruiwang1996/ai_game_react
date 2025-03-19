@@ -8,7 +8,7 @@ function GridView(props) {
 
     useEffect(() => {
         setLoading(true);
-        fetch(`http://127.0.0.1:8000/roomba/${props.width}&${props.length}&${props.maxPower}`)
+        fetch(`http://127.0.0.1:8000/roomba/?row=${props.width}&col=${props.length}&max_power=${props.maxPower}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error("Network response not ok");
@@ -24,10 +24,10 @@ function GridView(props) {
                 setError(error);
                 setLoading(false);
             });
-    }, [props.width, props.length, props.maxPower]);
+    }, []);
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error.message}</p>;
+    if (loading) return <p className="loading-text">Loading...</p>;
+    if (error) return <p className="error-text">Error: {error.message}</p>;
 
     return (
         <div className='grid-view'>
