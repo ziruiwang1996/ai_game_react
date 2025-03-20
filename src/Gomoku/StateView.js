@@ -5,12 +5,10 @@ import GridView from './GridView';
 function StateView(props) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-
     const [state, setState] = useState(null);
     const [status, setStatus] = useState(null);
-
     const [board, setBoard] = useState(null);
-
+    const [message, setMessage] = useState(null);
     const [col, setCol] = useState(null);
     const [row, setRow] = useState(null);
 
@@ -22,7 +20,6 @@ function StateView(props) {
         }
 
         const intArray = new Int32Array(bytes.buffer);
-        // Convert to n x n array
         const b = [];
         for (let i = 0; i < props.boardSize; i++) {
             b.push(Array.from(intArray.slice(i * props.boardSize, (i + 1) * props.boardSize)));
@@ -66,6 +63,9 @@ function StateView(props) {
                     setStatus(data.status);
                     decodeBase64Numpy(data.state);
                     setLoading(false);
+                    if (data.status === 0) setMessage("It is a Tie");
+                    if (data.status === 1) setMessage("You Win!");
+                    if (data.status === 2) setMessage("Zirui Win!");
                 })
                 .catch(error => {
                     setError(error);
@@ -78,14 +78,20 @@ function StateView(props) {
     if (error) return <p className="error-text">Error: {error.message}</p>;
 
     const handleClick = (rIdx, cIdx) => {
-        if (status === 1) return; // player win
-        if (status === 2) return; // AI win
-        setRow(rIdx);
-        setCol(cIdx);
+        if (status === 3) {
+            if (board[rIdx][cIdx] === 0) {
+                setRow(rIdx);
+                setCol(cIdx);
+            }
+        }
     }
 
     return (
-        <div className='board-view'>
+        <div className="board-container">
+            {message && <div style={{textAlign: "center"}}>
+                            <h1>Game Over!</h1>
+                            <h1>{message}</h1>
+                        </div>}
             <div style={{display: "grid", gridTemplateColumns: `repeat(${props.boardSize}, 1fr)`, width: "fit-content"}}>
                 {board !== null && 
                     board.map((rowValues, rIdx) => (

@@ -1,5 +1,5 @@
 import React, {useState, useContext} from "react";
-import GridView from "./GridView";
+import AnimView from "./AnimView";
 import { GameContext } from "../App";
 
 function RoombaHome() {
@@ -30,11 +30,10 @@ function RoombaHome() {
                         <li>Roomba finishes cleaning before running out of power.</li>
                         <li>Roomba returns to a charger (gray cell) after cleaning.</li>
                     </ul>
-                    <p>Let's test Zirui's solution! Input <b>positive integer</b> to define room dimension and Roomba power capacity.</p>
-                    <br/>
+                    <p>Let's test Zirui's solution! Input <b>positive integer</b> to define room dimension and Roomba power capacity. It is recommended that the <b>power capacity</b> be set to <b>2 × max(room width, room length) + 1</b> to ensure a solution.</p>
                     <p>Roomba instructions:</p>
                     <ul>
-                        <li>Moves in 6 directions: up, down, left, right, diagonal, or stay put.</li>
+                        <li>Moves in 5 directions: up, down, left, right, or stay put.</li>
                         <li>Loses 1 power per move (except staying put on a clean square).</li>
                         <li>Cleans a dirty square only by staying put on it, consuming 1 power.</li>
                         <li>Charges by staying put on a charger (if not at max power).</li>
@@ -57,7 +56,7 @@ function RoombaHome() {
                 && (width > 0) 
                 && (length > 0)
                 && (maxPower > 0) 
-                && ( <GridView width={width} length={length} maxPower={maxPower}/> )}
+                && ( <AnimView width={width} length={length} maxPower={maxPower}/> )}
         </div>
     )
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-function GridView(props) {
+function AnimView(props) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -30,16 +30,16 @@ function GridView(props) {
     if (error) return <p className="error-text">Error: {error.message}</p>;
 
     return (
-        <div className='grid-view'>
+        <div className='anim-view'>
             {data && <img src={data} alt="Roomba Animation" />}
         </div>
     )
 }
 
-GridView.propTypes = {
+AnimView.propTypes = {
     width: PropTypes.number.isRequired,
     length: PropTypes.number.isRequired,
     maxPower: PropTypes.number.isRequired
 };
 
-export default GridView;
+export default AnimView;

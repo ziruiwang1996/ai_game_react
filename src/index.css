@@ -84,7 +84,7 @@ body {
   background-color: hsl(0, 0%, 0%);
 }
 
-.grid-view {
+.anim-view {
   display: flex; /* Center content inside */
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
@@ -94,7 +94,7 @@ body {
   margin: 0 auto; /* Center horizontally */
   padding: 10px;
 }
-.grid-view img {
+.anim-view img {
   width: 100%; /* Make image responsive */
   height: auto; /* Keep aspect ratio */
   object-fit: contain; /* Ensure full image is visible */
@@ -128,14 +128,25 @@ body {
   color: red;
 }
 
-.board-view {
+.board-container {
+  margin-top: 58px;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  align-items: center; /* Align vertically */
+  gap: 60px; /* Add spacing between message and board */
 }
+.board-container h1 {
+  font-size: 1.5rem;
+  white-space: nowrap; /* Prevents text from wrapping */
+}
+
 .grid-view {
   border: 1px solid hsl(0, 0%, 0%);
   width: 36px;
   height: 36px;
+  cursor: pointer;
+}
+.grid-view h1 {
+  margin: 0;
+  text-align: center;
 }

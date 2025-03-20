@@ -18,7 +18,7 @@ function GridView(props) {
     }
 
     return (
-        <div className='grid-view' onClick={props.onClick} style={{ cursor: 'pointer' }}>
+        <div className='grid-view' onClick={props.onClick}>
             <h1>{symbol}</h1>
         </div>
     );
