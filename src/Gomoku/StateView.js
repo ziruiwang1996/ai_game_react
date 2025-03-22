@@ -12,6 +12,8 @@ function StateView(props) {
     const [col, setCol] = useState(null);
     const [row, setRow] = useState(null);
 
+    const BASE_URL = process.env.REACT_APP_API_URL;
+
     const decodeBase64Numpy = (base64String) => {
         const binaryString = atob(base64String);
         const bytes = new Uint8Array(binaryString.length);
@@ -29,7 +31,7 @@ function StateView(props) {
 
     useEffect(() => {
         setLoading(true);
-        fetch(`http://127.0.0.1:8000/gomoku/start?board_size=${props.boardSize}&win_size=${props.winSize}&ai_first=${props.aiFirst}`)
+        fetch(`${BASE_URL}/gomoku/start?board_size=${props.boardSize}&win_size=${props.winSize}&ai_first=${props.aiFirst}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error("Network response not ok");
@@ -51,7 +53,7 @@ function StateView(props) {
     useEffect(() => {
         setLoading(true);
         if (col !== null && row !== null) {
-            fetch(`http://127.0.0.1:8000/gomoku/move?board_size=${props.boardSize}&win_size=${props.winSize}&col=${col}&row=${row}&state_str=${state}`)
+            fetch(`${BASE_URL}/gomoku/move?board_size=${props.boardSize}&win_size=${props.winSize}&col=${col}&row=${row}&state_str=${state}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error("Network response not ok");
