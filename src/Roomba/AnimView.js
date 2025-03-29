@@ -6,12 +6,11 @@ function AnimView(props) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const BASE_URL = process.env.REACT_APP_API_URL;
+    const BASE_URL = window.location.origin;
 
     useEffect(() => {
         setLoading(true);
-        console.log(`${BASE_URL}/roomba/?row=${props.width}&col=${props.length}&max_power=${props.maxPower}`)
-        fetch(`${BASE_URL}/roomba/?row=${props.width}&col=${props.length}&max_power=${props.maxPower}`)
+        fetch(`/api/roomba/?row=${props.width}&col=${props.length}&max_power=${props.maxPower}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error("Network response not ok");
