@@ -54,11 +54,13 @@ function App() {
   return (
     <div>
       <Header/>
-      <GameCard name="Roomba" image={roombaImage} onClick={() => {setPlayRoomba(true);}}/>
-      <GameCard name="Gomoku" image={gomokuImage} onClick={() => {setPlayGomoku(true);}}/>
-      <GameCard name="Escape from Liam" image={catMouseImage} onClick={() => {setPlayCatMouse(true);}}/>
-      <GameCard name="Robot Arm" image={robotArmImage} onClick={() => {setPlayRobotArm(true);}}/>
-      <GameCard name="Stay Tuned" image={comeSoonImage}/>
+      <div className="game-container">
+        <GameCard name="Roomba" image={roombaImage} onClick={() => {setPlayRoomba(true);}}/>
+        <GameCard name="Gomoku" image={gomokuImage} onClick={() => {setPlayGomoku(true);}}/>
+        <GameCard name="Escape from Liam" image={catMouseImage} onClick={() => {setPlayCatMouse(true);}}/>
+        <GameCard name="Robot Arm" image={robotArmImage} onClick={() => {setPlayRobotArm(true);}}/>
+        <GameCard name="Stay Tuned" image={comeSoonImage}/>
+      </div>
     </div>
   );
 }
