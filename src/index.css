@@ -47,14 +47,6 @@ body {
   font-size: 1rem;
   margin: 20px;
 }
-
-.roomba-input-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin: 20px;
-}
 .input-group {
   display: flex;
   flex-direction: column; /* Label on top of input */
@@ -63,13 +55,20 @@ body {
   max-width: 300px; /* Prevent input from being too wide */
 }
 
-.roomba-input-container input {
+.input-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 20px;
+}
+.input-container input {
   padding: 5px;
   font-size: 1rem;
   border-radius: 5px;
   border: 1px solid hsl(0, 0%, 80%);
 }
-.roomba-input-container button {
+.input-container button {
   width: 100px;
   padding: 5px;
   font-size: 1rem;
@@ -80,7 +79,7 @@ body {
   cursor: pointer;
   transition: background-color 0.5s ease;
 }
-.roomba-input-container button:hover {
+.input-container button:hover {
   background-color: hsl(0, 0%, 0%);
 }
 
@@ -149,4 +148,18 @@ body {
 .grid-view h1 {
   margin: 0;
   text-align: center;
+}
+
+.cat-mouse-content {
+  display: flex;
+  align-items: center; 
+}
+
+.cat-mouse-content p {
+  flex: 1; 
+  margin-right: 0;
+}
+.cat-mouse-content img {
+  max-width: 200px;
+  height: auto;
 }

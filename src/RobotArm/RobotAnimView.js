@@ -1,29 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 
-function CMAnimView(props) {
+function RobotAnimView(props) {
     const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoanding] = useState(null);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        setLoading(true);
-        fetch(`/api/catmouse/?row=${props.width}&col=${props.length}`)
+    useEffect( () => {
+        setLoanding(true);
+        fetch(`/api/robotarm/?arms=${props.arms}&target=${props.target}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error("Network response not ok");
                 }
                 return response.blob();
             })
-            .then(blob => {
+            .then (blob => {
                 const url = URL.createObjectURL(blob);
                 setData(url);
-                setLoading(false);
+                setLoanding(false);
             })
             .catch(error => {
                 setError(error);
-                setLoading(false);
-            });
+                setLoanding(false);
+            })
     }, []);
 
     if (loading) return <p className="loading-text">Loading...</p>;
@@ -31,14 +31,14 @@ function CMAnimView(props) {
 
     return (
         <div className='anim-view'>
-            {data && <img src={data} alt="Cat Mouse Animation" />}
-        </div>
+        {data && <img src={data} alt="Robot Arm Animation" />}
+    </div>
     )
 }
 
-CMAnimView.propTypes = {
-    width: PropTypes.number.isRequired,
-    length: PropTypes.number.isRequired
+RobotAnimView.propTypes = {
+    arms: PropTypes.string.isRequired,
+    target: PropTypes.string.isRequired
 };
 
-export default CMAnimView;
+export default RobotAnimView;
