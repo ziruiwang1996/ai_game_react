@@ -3,8 +3,8 @@ import { GameContext } from "../App";
 import RobotAnimView from "./RobotAnimView";
 
 function RobotArmHome() {
-    const [arms, setArms] = useState([]);
-    const [target, setTarget] = useState([]);
+    const [arms, setArms] = useState("");
+    const [target, setTarget] = useState("");
     const [showAnimView, setShowAnimView] = useState(false);
     const [buttonText, setButtonText] = useState("Play");
     const {setPlayRobotArm} = useContext(GameContext);
@@ -42,10 +42,10 @@ function RobotArmHome() {
                 <label htmlFor="tc">Target Coordinate:</label>
                 <input id="tc" type="string" value={target} placeholder="x, y" onChange={(event) => setTarget(event.target.value)}/>
                 <button className="play-button" onClick={handlePlayClick}>{buttonText}</button>
-                <button classname="home-button" onClick={() => setPlayRobotArm(false)}>Back Home</button>
+                <button className="home-button" onClick={() => setPlayRobotArm(false)}>Back Home</button>
             </div>
-            {showAnimView
-                && ( <RobotAnimView arms={arms} taregt={target}/>)}
+            {showAnimView && arms && target
+                && ( <RobotAnimView arms={arms} target={target}/>)}
         </div>
     );
 }
