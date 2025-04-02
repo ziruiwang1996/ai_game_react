@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-function AnimView(props) {
+function CMAnimView(props) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         setLoading(true);
-        fetch(`/api/roomba/?row=${props.width}&col=${props.length}&max_power=${props.maxPower}`)
+        fetch(`/api/catmouse/?row=${props.width}&col=${props.length}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error("Network response not ok");
@@ -31,15 +31,15 @@ function AnimView(props) {
 
     return (
         <div className='anim-view'>
-            {data && <img src={data} alt="Roomba Animation" />}
+            {data && <img src={data} alt="Cat Mouse Animation" />}
         </div>
     )
 }
 
-AnimView.propTypes = {
+CMAnimView.PropTypes = {
     width: PropTypes.number.isRequired,
-    length: PropTypes.number.isRequired,
-    maxPower: PropTypes.number.isRequired
-};
+    length: PropTypes.number.isRequired
+}
 
-export default AnimView;
+
+export default CMAnimView;
