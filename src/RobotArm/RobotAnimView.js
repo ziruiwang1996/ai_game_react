@@ -8,7 +8,7 @@ function RobotAnimView(props) {
 
     useEffect( () => {
         setLoanding(true);
-        fetch(`/api/robotarm/?arms=${props.arms}&target=${props.target}`)
+        fetch(`/api/robotarm/?arms=${props.arms}&target=${props.target}&iterations=${props.iterations}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error("Network response not ok");
@@ -38,7 +38,8 @@ function RobotAnimView(props) {
 
 RobotAnimView.propTypes = {
     arms: PropTypes.string.isRequired,
-    target: PropTypes.string.isRequired
+    target: PropTypes.string.isRequired,
+    iterations: PropTypes.number.isRequired
 };
 
 export default RobotAnimView;

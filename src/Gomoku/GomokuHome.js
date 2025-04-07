@@ -6,7 +6,6 @@ function GomokuHome() {
     const [boardSize, setBoardSize] = useState(null);
     const [winSize, setWinSize] = useState(null);
     const [aiFirst, setAiFirst] = useState(null);
-
     const [showStateView, setShowStateView] = useState(false);
     const [buttonText, setButtonText] = useState("Start Game");
     const {setPlayGomoku} = useContext(GameContext);
@@ -14,8 +13,17 @@ function GomokuHome() {
     const handlePlayClick = () => {
         setShowStateView(false); 
         setTimeout(() => {
-            setShowStateView(true);
-            setButtonText("Play Again");
+            if (boardSize > 10) {
+                window.alert("Due to server limitations, this game only supports board size < 10.");
+            } else if (winSize > boardSize) {
+                window.alert("The win size cannot be greater than the board size.");
+            } else if (aiFirst === null) {
+                window.alert("Please set who goes first to start the game.");
+            }
+            else {
+                setShowStateView(true);
+                setButtonText("Play Again");
+            }
         }, 0);
     };
 
@@ -56,7 +64,6 @@ function GomokuHome() {
                 <button className="home-button" onClick={handlePlayClick}>Reset Game</button>
                 <button className="home-button" onClick={() => setPlayGomoku(false)}>Back Home</button>
             </div>
-
             {showStateView 
                 && ( <StateView boardSize={boardSize} winSize={winSize} aiFirst={aiFirst}/> )}
         </div>

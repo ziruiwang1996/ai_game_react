@@ -13,8 +13,15 @@ function RoombaHome() {
     const handlePlayClick = () => {
         setShowGridView(false); // Unmount GridView
         setTimeout(() => {
-            setShowGridView(true); // Remount GridView with new props
-            setButtonText("Play Again");
+            if (maxPower < 2 * Math.max(width, length) + 1) {
+                window.alert("To guarantee a solution, try a larger power capacity.");
+            } else if (width < 3 || length < 3) {
+                window.alert("Ensure the room is large enough for Roomba to move around.");
+            }
+            else {
+                setShowGridView(true); // Remount GridView with new props
+                setButtonText("Play Again");
+            }
         }, 0);
     };
 

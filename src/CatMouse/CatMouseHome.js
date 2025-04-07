@@ -11,10 +11,14 @@ function CatMouseHome() {
     const [buttonText, setButtonText] = useState("Play");
 
     const handlePlayClick = () => {
-        setShowAnimView(false); // Unmount GridView
+        setShowAnimView(false);
         setTimeout(() => {
-            setShowAnimView(true); // Remount GridView with new props
-            setButtonText("Play Again");
+            if (width <= 2 || length <= 2) {
+                window.alert("Ensure the room is large enough for Liam and his toy to move around.");
+            } else {
+                setShowAnimView(true);
+                setButtonText("Play Again");
+            }
         }, 0);
     };
 
@@ -39,7 +43,7 @@ function CatMouseHome() {
                             <li>Optimizing behavior: Over time, the mouse refines its strategy, making it increasingly difficult for Liam to catch it.</li>
                         </ul>
                         <p>Can Liam outsmart his learning toy, or will the mouse keep slipping away? Watch as reinforcement learning unfolds in real time!<br/>
-                        Set the game in motion and see if Liam can finally catch his clever little mouse! 🐭🔥</p>
+                        Set the game in motion by defining the room dimensions, and see if Liam can finally catch his clever little mouse! 🐭🔥</p>
                         </div>
                         <img src={Liam}/>
                     </div>
