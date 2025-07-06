@@ -8,22 +8,45 @@ function AnimView(props) {
 
     useEffect(() => {
         setLoading(true);
-        fetch(`/api/roomba/?row=${props.width}&col=${props.length}&max_power=${props.maxPower}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Network response not ok");
-                }
-                return response.blob();
+        fetch('http://localhost:8000/api/roomba/pathfind', {
+            method : 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                grid_rows: props.length,
+                grid_cols: props.width,
+                max_power: props.maxPower,
+                num_dirty_spots: 5, // Example value, adjust as needed
+                algorithm: 'a_star', // or 'breadth_first'
+                animation_speed: 500 // milliseconds per frame
             })
-            .then(blob => {
-                const url = URL.createObjectURL(blob);
-                setData(url);
-                setLoading(false);
-            })
-            .catch(error => {
-                setError(error);
-                setLoading(false);
-            });
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Now fetch the animation using the animation_url from the JSON response
+            return fetch(`http://localhost:8000${data.animation_url}`);
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch animation");
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const url = URL.createObjectURL(blob);
+            setData(url);
+            setLoading(false);
+        })
+        .catch(error => {
+            setError(error);
+            setLoading(false);
+        });
     }, []);
 
     if (loading) return <p className="loading-text">Loading...</p>;

@@ -8,22 +8,40 @@ function CMAnimView(props) {
 
     useEffect(() => {
         setLoading(true);
-        fetch(`/api/catmouse/?row=${props.width}&col=${props.length}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Network response not ok");
-                }
-                return response.blob();
+        fetch('http://localhost:8000/api/catmouse/simulate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                grid_rows: props.width,
+                grid_cols: props.length
             })
-            .then(blob => {
-                const url = URL.createObjectURL(blob);
-                setData(url);
-                setLoading(false);
-            })
-            .catch(error => {
-                setError(error);
-                setLoading(false);
-            });
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            return fetch(`http://localhost:8000${data.animation_url}`);
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch animation");
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const url = URL.createObjectURL(blob);
+            setData(url);
+            setLoading(false);
+        })
+        .catch(error => {
+            setError(error);
+            setLoading(false);
+        });
     }, []);
 
     if (loading) return <p className="loading-text">Loading...</p>;

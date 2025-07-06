@@ -29,7 +29,50 @@ function StateView(props) {
 
     useEffect(() => {
         setLoading(true);
-        fetch(`/api/gomoku/start?board_size=${props.boardSize}&win_size=${props.winSize}&ai_first=${props.aiFirst}`)
+        fetch('http://localhost:8000/api/gomoku/start', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                board_size: props.boardSize,
+                win_size: props.winSize,
+                ai_first: props.aiFirst
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            setState(data.state);
+            setStatus(data.status);
+            decodeBase64Numpy(data.state);
+            setLoading(false);
+        })
+        .catch(error => {
+            setError(error);
+            setLoading(false);
+        });
+    }, []);
+
+    useEffect(() => {
+        setLoading(true);
+        if (col !== null && row !== null) {
+            fetch('http://localhost:8000/api/gomoku/move', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    board_size: props.boardSize,
+                    win_size: props.winSize,
+                    col: col,
+                    row: row,
+                    state_str: state
+                })
+            }) 
             .then(response => {
                 if (!response.ok) {
                     throw new Error("Network response not ok");
@@ -41,35 +84,13 @@ function StateView(props) {
                 setStatus(data.status);
                 decodeBase64Numpy(data.state);
                 setLoading(false);
+                if (data.status === "tie") setMessage("It is a Tie");
+                if (data.status === "player_win") setMessage("You Win!");
+                if (data.status === "ai_win") setMessage("AI Win!");
             })
             .catch(error => {
                 setError(error);
                 setLoading(false);
-            });
-    }, []);
-
-    useEffect(() => {
-        setLoading(true);
-        if (col !== null && row !== null) {
-            fetch(`/api/gomoku/move?board_size=${props.boardSize}&win_size=${props.winSize}&col=${col}&row=${row}&state_str=${state}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Network response not ok");
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    setState(data.state);
-                    setStatus(data.status);
-                    decodeBase64Numpy(data.state);
-                    setLoading(false);
-                    if (data.status === 0) setMessage("It is a Tie");
-                    if (data.status === 1) setMessage("You Win!");
-                    if (data.status === 2) setMessage("Zirui Win!");
-                })
-                .catch(error => {
-                    setError(error);
-                    setLoading(false);
             });
         }
     }, [col, row]);
@@ -78,7 +99,7 @@ function StateView(props) {
     if (error) return <p className="error-text">Error: {error.message}</p>;
 
     const handleClick = (rIdx, cIdx) => {
-        if (status === 3) {
+        if (status === "in_progress" && board !== null) {
             if (board[rIdx][cIdx] === 0) {
                 setRow(rIdx);
                 setCol(cIdx);

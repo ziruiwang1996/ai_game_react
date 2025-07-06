@@ -58,7 +58,7 @@ function GomokuHome() {
                 <select value={aiFirst} onChange={(event)=>{setAiFirst(event.target.value)}}>
                     <option value="" disabled selected hidden>Who Goes First</option>
                     <option value="false">Player</option>
-                    <option value="true">Zirui</option>
+                    <option value="true">AI</option>
                 </select>
                 <button className="play-button" onClick={handlePlayClick}>{buttonText}</button>
                 <button className="home-button" onClick={handlePlayClick}>Reset Game</button>

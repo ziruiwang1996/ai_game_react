@@ -3,27 +3,48 @@ import PropTypes from 'prop-types';
 
 function RobotAnimView(props) {
     const [data, setData] = useState(null);
-    const [loading, setLoanding] = useState(null);
+    const [loading, setLoading] = useState(null);
     const [error, setError] = useState(null);
 
-    useEffect( () => {
-        setLoanding(true);
-        fetch(`/api/robotarm/?arms=${props.arms}&target=${props.target}&iterations=${props.iterations}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Network response not ok");
-                }
-                return response.blob();
+    useEffect(() => {
+        setLoading(true);
+        fetch('http://localhost:8000/api/robotarm/simulate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                arm_lengths: props.arms.split(',').map(s => parseFloat(s.trim())),
+                target_position: props.target.split(',').map(s => parseFloat(s.trim())),
+                iterations: props.iterations,
+                learning_rate: 0.01,
+                convergence_threshold: 0.1
             })
-            .then (blob => {
-                const url = URL.createObjectURL(blob);
-                setData(url);
-                setLoanding(false);
-            })
-            .catch(error => {
-                setError(error);
-                setLoanding(false);
-            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            return fetch(`http://localhost:8000${data.animation_url}`);
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch animation");
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const url = URL.createObjectURL(blob);
+            setData(url);
+            setLoading(false);
+        })
+        .catch(error => {
+            setError(error);
+            setLoading(false);
+        });
     }, []);
 
     if (loading) return <p className="loading-text">Loading...</p>;
