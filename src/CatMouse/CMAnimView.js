@@ -43,7 +43,7 @@ function CMAnimView(props) {
             setError(error);
             setLoading(false);
         });
-    }, []);
+    }, [props.width, props.length, API_URL]);
 
     if (loading) return <p className="loading-text">Loading...</p>;
     if (error) return <p className="error-text">Error: {error.message}</p>;

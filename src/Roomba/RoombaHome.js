@@ -1,6 +1,5 @@
-import React, {useState, useContext} from "react";
+import React, {useState} from "react";
 import AnimView from "./AnimView";
-import { GameContext } from "../App";
 
 function RoombaHome() {
     const [width, setWidth] = useState(null);
@@ -8,7 +7,6 @@ function RoombaHome() {
     const [maxPower, setMaxPower] = useState(null);
     const [showGridView, setShowGridView] = useState(false);
     const [buttonText, setButtonText] = useState("Play");
-    const {setPlayRoomba} = useContext(GameContext);
 
     const handlePlayClick = () => {
         setShowGridView(false); // Unmount GridView

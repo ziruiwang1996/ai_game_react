@@ -47,7 +47,7 @@ function RobotAnimView(props) {
             setError(error);
             setLoading(false);
         });
-    }, []);
+    }, [props.arms, props.target, props.iterations, API_URL]);
 
     if (loading) return <p className="loading-text">Loading...</p>;
     if (error) return <p className="error-text">Error: {error.message}</p>;

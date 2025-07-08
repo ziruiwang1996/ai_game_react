@@ -1,9 +1,7 @@
-import React, {useState, useContext} from "react";
-import { GameContext } from "../App";
+import React, {useState} from "react";
 import CMAnimView from './CMAnimView';
 
 function CatMouseHome() {
-    const {setPlayCatMouse} = useContext(GameContext);
     const [width, setWidth] = useState(null);
     const [length, setLength] = useState(null);
     const [showAnimView, setShowAnimView] = useState(false);

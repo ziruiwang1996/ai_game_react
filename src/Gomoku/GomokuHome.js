@@ -1,5 +1,4 @@
-import React, {useState, useEffect, useContext} from "react";
-import { GameContext } from "../App";
+import React, {useState, useEffect} from "react";
 import StateView from "./StateView";
 
 function GomokuHome() {
@@ -8,7 +7,6 @@ function GomokuHome() {
     const [aiFirst, setAiFirst] = useState(null);
     const [showStateView, setShowStateView] = useState(false);
     const [buttonText, setButtonText] = useState("Start Game");
-    const {setPlayGomoku} = useContext(GameContext);
 
     const handlePlayClick = () => {
         setShowStateView(false); 

@@ -1,5 +1,4 @@
-import React, {useState, useContext} from "react";
-import { GameContext } from "../App";
+import React, {useState} from "react";
 import RobotAnimView from "./RobotAnimView";
 
 function RobotArmHome() {
@@ -8,7 +7,6 @@ function RobotArmHome() {
     const [iterations, setIterations] = useState(50);
     const [showAnimView, setShowAnimView] = useState(false);
     const [buttonText, setButtonText] = useState("Play");
-    const {setPlayRobotArm} = useContext(GameContext);
 
     const handlePlayClick = () => {
         setShowAnimView(false);
@@ -33,12 +31,12 @@ function RobotArmHome() {
             <div className="instruction-container">
                 <div className="instruction">
                     <h1>Robot Arm Challenge</h1>
-                    <p>Embark on a hands-on journey into the world of optimization with Gradient Descent: Robot Arm Challenge! In this interactive game, you'll explore how gradient descent—a fundamental machine learning and optimization algorithm—helps a robotic arm adjust its joint angles to precisely reach a designated target.</p>
+                    <p>Embark on a hands-on journey into the world of optimization with Gradient Descent: Robot Arm Challenge! In this interactive game, you&apos;ll explore how gradient descent—a fundamental machine learning and optimization algorithm—helps a robotic arm adjust its joint angles to precisely reach a designated target.</p>
                     <p><b>How It Works:</b></p>
                     <ul>
                         <li>The robot arm consists of multiple segments connected by joints.</li>
-                        <li>Your goal is to set a target position, and the algorithm will iteratively adjust the angles of the arm's joints using gradient descent to move closer to the target.</li>
-                        <li>The optimization process continuously minimizes the distance between the arm’s end-effector (hand) and the target by adjusting angles step by step.</li>
+                        <li>Your goal is to set a target position, and the algorithm will iteratively adjust the angles of the arm&apos;s joints using gradient descent to move closer to the target.</li>
+                        <li>The optimization process continuously minimizes the distance between the arm&apos;s end-effector (hand) and the target by adjusting angles step by step.</li>
                     </ul>
                     <p><b>How It Works:</b></p>
                     <ul>

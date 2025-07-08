@@ -49,7 +49,7 @@ function AnimView(props) {
             setError(error);
             setLoading(false);
         });
-    }, []);
+    }, [API_URL, props.length, props.width, props.maxPower]);
 
     if (loading) return (
         <div className="loading-text">

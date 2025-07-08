@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 function Header({ showBackButton = false, onBackClick = null, currentGame = null, hideTitle = false }) {
     return (
       <header className="header">
@@ -20,5 +22,12 @@ function Header({ showBackButton = false, onBackClick = null, currentGame = null
       </header>
     );
 }
+
+Header.propTypes = {
+  showBackButton: PropTypes.bool,
+  onBackClick: PropTypes.func,
+  currentGame: PropTypes.string,
+  hideTitle: PropTypes.bool
+};
 
 export default Header;
