@@ -3,7 +3,7 @@ const http = require('http');
 
 exports.handler = async function(event, context) {
   // The API endpoint we want to forward requests to - ensure it's accessible from Netlify's servers
-  const API_ENDPOINT = 'http://3.89.251.26:8000';
+  const API_ENDPOINT = 'https://3.89.251.26:443';
   
   console.log('Netlify function invoked with path:', event.path);
   console.log('Request headers:', JSON.stringify(event.headers));

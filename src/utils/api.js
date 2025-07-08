@@ -20,7 +20,7 @@ export const getApiUrl = () => {
     }
     // Default to direct backend URL for local development
     console.log('Detected local development environment');
-    return 'http://3.89.251.26:8000';
+    return 'https://3.89.251.26:8000';
   }
   
   // In production with our Nginx setup
@@ -40,7 +40,7 @@ export const getApiUrl = () => {
   
   // Fallback to direct API URL
   console.log('Using fallback direct API URL');
-  return 'http://3.89.251.26:8000';
+  return 'https://3.89.251.26:8000';
 };
 
 // Helper function to make API calls with proper headers
