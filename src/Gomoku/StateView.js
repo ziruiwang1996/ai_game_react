@@ -11,6 +11,7 @@ function StateView(props) {
     const [message, setMessage] = useState(null);
     const [col, setCol] = useState(null);
     const [row, setRow] = useState(null);
+    const API_URL = 'https://ai-game-fastapi.onrender.com';
 
     const decodeBase64Numpy = (base64String) => {
         const binaryString = atob(base64String);
@@ -29,7 +30,7 @@ function StateView(props) {
 
     useEffect(() => {
         setLoading(true);
-        fetch('http://localhost:8000/api/gomoku/start', {
+        fetch(`${API_URL}/api/gomoku/start`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'},
@@ -60,7 +61,7 @@ function StateView(props) {
     useEffect(() => {
         setLoading(true);
         if (col !== null && row !== null) {
-            fetch('http://localhost:8000/api/gomoku/move', {
+            fetch(`${API_URL}/api/gomoku/move`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

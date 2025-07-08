@@ -22,7 +22,10 @@ function App() {
   if (playRoomba) {
     return (
       <GameContext.Provider value={{setPlayRoomba}}>
-        <RoombaHome/>
+        <div className="page-transition">
+          <Header showBackButton={true} onBackClick={() => setPlayRoomba(false)} currentGame="Roomba" hideTitle={true} />
+          <RoombaHome/>
+        </div>
       </GameContext.Provider>
       );
   }
@@ -30,7 +33,10 @@ function App() {
   if (playGomoku) {
     return (
       <GameContext.Provider value={{setPlayGomoku}}>
-        <GomokuHome/>
+        <div className="page-transition">
+          <Header showBackButton={true} onBackClick={() => setPlayGomoku(false)} currentGame="Gomoku" hideTitle={true} />
+          <GomokuHome/>
+        </div>
       </GameContext.Provider>
     );
   }
@@ -38,7 +44,10 @@ function App() {
   if (playCatMouse) {
     return (
       <GameContext.Provider value={{setPlayCatMouse}}>
-        <CatMouseHome/>
+        <div className="page-transition">
+          <Header showBackButton={true} onBackClick={() => setPlayCatMouse(false)} currentGame="Escape from Liam" hideTitle={true} />
+          <CatMouseHome/>
+        </div>
       </GameContext.Provider>
     );
   }
@@ -46,13 +55,16 @@ function App() {
   if (playRobotArm) {
     return (
       <GameContext.Provider value={{setPlayRobotArm}}>
-        <RobotArmHome/>
+        <div className="page-transition">
+          <Header showBackButton={true} onBackClick={() => setPlayRobotArm(false)} currentGame="Robot Arm" hideTitle={true} />
+          <RobotArmHome/>
+        </div>
       </GameContext.Provider>
     );
   }
 
   return (
-    <div>
+    <div className="page-transition">
       <Header/>
       <div className="game-container">
         <GameCard name="Roomba" image={roombaImage} onClick={() => {setPlayRoomba(true);}}/>

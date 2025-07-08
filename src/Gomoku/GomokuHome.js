@@ -61,8 +61,7 @@ function GomokuHome() {
                     <option value="true">AI</option>
                 </select>
                 <button className="play-button" onClick={handlePlayClick}>{buttonText}</button>
-                <button className="home-button" onClick={handlePlayClick}>Reset Game</button>
-                <button className="home-button" onClick={() => setPlayGomoku(false)}>Back Home</button>
+                <button className="reset-button" onClick={() => {setShowStateView(false); setButtonText("Start Game");}}>Reset Game</button>
             </div>
             {showStateView 
                 && ( <StateView boardSize={boardSize} winSize={winSize} aiFirst={aiFirst}/> )}

@@ -5,10 +5,10 @@ function CMAnimView(props) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
+    const API_URL = 'https://ai-game-fastapi.onrender.com';
     useEffect(() => {
         setLoading(true);
-        fetch('http://localhost:8000/api/catmouse/simulate', {
+        fetch(`${API_URL}/api/catmouse/simulate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -25,7 +25,7 @@ function CMAnimView(props) {
             return response.json();
         })
         .then(data => {
-            return fetch(`http://localhost:8000${data.animation_url}`);
+            return fetch(`${API_URL}${data.animation_url}`);
         })
         .then(response => {
             if (!response.ok) {

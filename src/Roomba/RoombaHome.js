@@ -62,7 +62,6 @@ function RoombaHome() {
                 <label htmlFor="pc">Power Capacity:</label>
                 <input id="pc" type="number" min="1" value={maxPower} onChange={(event) => setMaxPower(Number(event.target.value))}/>
                 <button className="play-button" onClick={handlePlayClick}>{buttonText}</button>
-                <button classname="home-button" onClick={() => setPlayRoomba(false)}>Back Home</button>
             </div>
             {showGridView 
                 && ( <AnimView width={width} length={length} maxPower={maxPower}/> )}

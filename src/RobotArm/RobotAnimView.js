@@ -5,10 +5,11 @@ function RobotAnimView(props) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(null);
     const [error, setError] = useState(null);
+    const API_URL = 'https://ai-game-fastapi.onrender.com';
 
     useEffect(() => {
         setLoading(true);
-        fetch('http://localhost:8000/api/robotarm/simulate', {
+        fetch(`${API_URL}/api/robotarm/simulate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -28,7 +29,7 @@ function RobotAnimView(props) {
             return response.json();
         })
         .then(data => {
-            return fetch(`http://localhost:8000${data.animation_url}`);
+            return fetch(`${API_URL}${data.animation_url}`);
         })
         .then(response => {
             if (!response.ok) {

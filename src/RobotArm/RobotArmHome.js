@@ -56,7 +56,6 @@ function RobotArmHome() {
                 <label htmlFor="i">Iterations:</label>
                 <input id="i" type="number" min="1" value={iterations} placeholder="50" onChange={(event) => setIterations(event.target.value)}/>
                 <button className="play-button" onClick={handlePlayClick}>{buttonText}</button>
-                <button className="home-button" onClick={() => setPlayRobotArm(false)}>Back Home</button>
             </div>
             {showAnimView && arms && target
                 && ( <RobotAnimView arms={arms} target={target} iterations={iterations}/>)}

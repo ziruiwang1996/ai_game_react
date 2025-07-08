@@ -5,10 +5,11 @@ function AnimView(props) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const API_URL = 'https://ai-game-fastapi.onrender.com';
 
     useEffect(() => {
         setLoading(true);
-        fetch('http://localhost:8000/api/roomba/pathfind', {
+        fetch(`${API_URL}/api/roomba/pathfind`, {
             method : 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -30,7 +31,7 @@ function AnimView(props) {
         })
         .then(data => {
             // Now fetch the animation using the animation_url from the JSON response
-            return fetch(`http://localhost:8000${data.animation_url}`);
+            return fetch(`${API_URL}${data.animation_url}`);
         })
         .then(response => {
             if (!response.ok) {
@@ -49,7 +50,12 @@ function AnimView(props) {
         });
     }, []);
 
-    if (loading) return <p className="loading-text">Loading...</p>;
+    if (loading) return (
+        <div className="loading-text">
+            <div className="loading-spinner"></div>
+            Loading animation...
+        </div>
+    );
     if (error) return <p className="error-text">Error: {error.message}</p>;
 
     return (

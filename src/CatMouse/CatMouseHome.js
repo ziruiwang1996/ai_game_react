@@ -55,7 +55,6 @@ function CatMouseHome() {
                 <label htmlFor="l">Length:</label>
                 <input id="l" type="number" min="1" value={length} onChange={(event) => setLength(Number(event.target.value))}/>
                 <button className="play-button" onClick={handlePlayClick}>{buttonText}</button>
-                <button classname="home-button" onClick={() => setPlayCatMouse(false)}>Back Home</button>
             </div>
             {showAnimView 
                 && ( <CMAnimView width={width} length={length}/> )}
