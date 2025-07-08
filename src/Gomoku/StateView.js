@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, {useState, useEffect} from 'react';
 import GridView from './GridView';
+import { getApiUrl } from '../utils/api';
 
 function StateView(props) {
     const [loading, setLoading] = useState(false);
@@ -11,7 +12,7 @@ function StateView(props) {
     const [message, setMessage] = useState(null);
     const [col, setCol] = useState(null);
     const [row, setRow] = useState(null);
-    const API_URL = 'https://ai-game-fastapi.onrender.com';
+    const API_URL = getApiUrl();
 
     const decodeBase64Numpy = (base64String) => {
         const binaryString = atob(base64String);

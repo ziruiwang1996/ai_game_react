@@ -33,7 +33,7 @@ function RoombaHome() {
                     <p>Zirui’s room has been a mess for a week—but luckily, his Roomba is ready to clean! To ensure efficiency, Zirui designed an A search algorithm* that helps Roomba navigate the room intelligently while conserving power.</p>
                     <p><b>How It Works:</b></p>
                     <ul>
-                        <li>Objective: Roomba must clean every dirty spot (white cells) while avoiding obstacles (black cells).</li>
+                        <li>Objective: Roomba must clean every dirty spot (white cells, randomly assigned when initiating the state) while avoiding obstacles (black cells).</li>
                         <li>Energy Management: It must finish cleaning before running out of power and return to a charger (gray cell) when needed.</li>
                         <li>Smart Navigation: The A* algorithm ensures Roomba finds the most efficient path to complete its task.</li>
                     </ul>

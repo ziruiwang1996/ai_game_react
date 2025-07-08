@@ -44,7 +44,7 @@ function GomokuHome() {
                         <li>To make the AI more efficient, Alpha-Beta pruning is implemented, reducing the number of moves it needs to evaluate.</li>
                         <li>However, on larger boards, response time may increase due to the complexity of searching for the best move.</li>
                     </ul>
-                    <p>Think you can outplay Zirui’s AI? It’s designed to be ruthless, but with clever strategy and patience, you just might find a way to win.</p>
+                    <p>Think you can outplay AI? It’s designed to be ruthless, but with clever strategy and patience, you just might find a way to win.</p>
                     <a href="https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://en.wikipedia.org/wiki/Gomoku%23:~:text%3D13%2520External%2520links-,Rules,horizontally%252C%2520vertically%252C%2520or%2520diagonally.&ved=2ahUKEwjXpdD_uJWMAxVQD1kFHStLIMkQFnoECCsQAw&usg=AOvVaw3MeskL1eRz7jcfYEF185Dz">
                         Click here to check Gomoku rules
                     </a>

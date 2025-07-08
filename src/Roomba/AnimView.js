@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { getApiUrl } from '../utils/api';
 
 function AnimView(props) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const API_URL = 'https://ai-game-fastapi.onrender.com';
+    const API_URL = getApiUrl();
 
     useEffect(() => {
         setLoading(true);

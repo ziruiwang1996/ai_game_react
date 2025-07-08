@@ -1,7 +1,6 @@
 import React, {useState, useContext} from "react";
 import { GameContext } from "../App";
 import CMAnimView from './CMAnimView';
-import Liam from '../assets/liam.jpeg'
 
 function CatMouseHome() {
     const {setPlayCatMouse} = useContext(GameContext);
@@ -26,26 +25,25 @@ function CatMouseHome() {
          <div>
             <div className="instruction-container">
                 <div className="instruction">
-                    <h1>Liam and the Learning Mouse</h1>
+                    <h1>Cat and the Learning Mouse</h1>
                     <div className="cat-mouse-content">
                         <div>
-                        <p>Meet Liam with his special toy mouse! But this isn’t just any ordinary toy—it has been programmed by Zirui to learn and adapt using Temporal Difference (TD) learning, a powerful reinforcement learning technique.</p>
+                        <p>Meet a special toy mouse! But this isn’t just any ordinary toy—it has been programmed by Zirui to learn and adapt using Temporal Difference (TD) learning, a powerful reinforcement learning technique.</p>
                         <p><b>How It Works:</b></p>
                         <ul>
-                            <li>The toy mouse (represented as a small blue circle) learns from experience, continuously improving its ability to evade Liam.</li>
-                            <li>Liam (represented as a larger red circle) tries to catch the mouse.</li>
+                            <li>The toy mouse (represented as a small blue circle) learns from experience, continuously improving its ability to evade the cat.</li>
+                            <li>The cat (represented as a larger red circle) tries to catch the mouse.</li>
                             <li>The mouse doesn’t rely on pre-programmed paths—it actively learns from each attempt, updating its strategy to avoid getting caught.</li>
                         </ul>
                         <p><b>The Power of TD Learning:</b></p>
                         <ul>
                             <li>Predict and adapt: TD learning helps the mouse estimate the future value of different actions by predicting the rewards they might yield.</li>
                             <li>Real-time decision-making: With every move, the mouse updates its knowledge, improving its ability to escape.</li>
-                            <li>Optimizing behavior: Over time, the mouse refines its strategy, making it increasingly difficult for Liam to catch it.</li>
+                            <li>Optimizing behavior: Over time, the mouse refines its strategy, making it increasingly difficult for the cat to catch it.</li>
                         </ul>
-                        <p>Can Liam outsmart his learning toy, or will the mouse keep slipping away? Watch as reinforcement learning unfolds in real time!<br/>
-                        Set the game in motion by defining the room dimensions, and see if Liam can finally catch his clever little mouse! 🐭🔥</p>
+                        <p>Can the cat outsmart its learning toy, or will the mouse keep slipping away? Watch as reinforcement learning unfolds in real time!<br/>
+                        Set the game in motion by defining the room dimensions, and see if the cat can finally catch its clever little mouse! 🐭🔥</p>
                         </div>
-                        <img src={Liam}/>
                     </div>
                 </div>
             </div>
