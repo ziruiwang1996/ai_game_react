@@ -1,0 +1,210 @@
+const https = require('https');
+const http = require('http');
+
+exports.handler = async function(event, context) {
+  // The API endpoint we want to forward requests to
+  const API_ENDPOINT = 'http://3.89.251.26:8000';
+  
+  // Handle OPTIONS preflight requests immediately
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 204, // No Content
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+        'Access-Control-Allow-Credentials': 'true',
+        'Access-Control-Max-Age': '86400',
+        'Content-Type': 'text/plain'
+      },
+      body: ''
+    };
+  }
+  
+  // Get the path and query parameters from the request
+  // Strip the Netlify function path prefix
+  const path = event.path.replace('/.netlify/functions/proxy', '');
+  
+  // Handle empty paths and add /api prefix if needed
+  let normalizedPath = path || '/';
+  
+  // Handle gomoku routes specially - make sure to add /api prefix if not already there
+  if (normalizedPath === '/gomoku/move' || normalizedPath === '/gomoku/start') {
+    normalizedPath = `/api${normalizedPath}`;
+    console.log(`Special handling for gomoku endpoint: ${normalizedPath}`);
+  }
+  // For other paths that don't already have /api, add it
+  else if (!normalizedPath.startsWith('/api')) {
+    normalizedPath = `/api${normalizedPath}`;
+  }
+  
+  // Build query string
+  const queryString = event.queryStringParameters 
+    ? Object.keys(event.queryStringParameters)
+        .map(key => `${key}=${encodeURIComponent(event.queryStringParameters[key])}`)
+        .join('&') 
+    : '';
+  
+  // Construct the URL for the API request
+  const url = `${API_ENDPOINT}${normalizedPath}${queryString ? '?' + queryString : ''}`;
+  
+  // Log the constructed URL for debugging
+  console.log(`Constructed API URL: ${url}`);
+  console.log(`Original path: ${path}`);
+  console.log(`HTTP method: ${event.httpMethod}`);
+  
+  // Debug logging
+  console.log(`Proxying ${event.httpMethod} request to: ${url}`);
+  if (event.body) {
+    const bodyPreview = event.body.length > 200 ? `${event.body.substring(0, 200)}...` : event.body;
+    console.log(`Request body: ${bodyPreview}`);
+  }
+  
+  // Select http or https module based on the URL
+  const client = url.startsWith('https') ? https : http;
+  
+  return new Promise((resolve, reject) => {
+    // Forward all original headers
+    const headers = {};
+    
+    // Copy original headers, but filter out some that can cause issues
+    for (const [key, value] of Object.entries(event.headers)) {
+      // Skip headers that can cause conflicts
+      if (!['host', 'connection', 'content-length'].includes(key.toLowerCase())) {
+        headers[key] = value;
+      }
+    }
+    
+    // Override specific headers
+    headers['Content-Type'] = event.headers['content-type'] || 'application/json';
+    
+    // Add X-Forwarded headers
+    headers['X-Forwarded-For'] = event.headers['client-ip'] || event.headers['x-forwarded-for'] || '';
+    headers['X-Forwarded-Proto'] = event.headers['x-forwarded-proto'] || 'https';
+    headers['X-Forwarded-Host'] = event.headers['host'] || '';
+    
+    // Use proper Host header for target service
+    headers['Host'] = new URL(API_ENDPOINT).host;
+    
+    const options = {
+      method: event.httpMethod,
+      headers: headers
+    };
+    
+    // If it's a request with body, make sure Content-Length is set correctly
+    if (['POST', 'PUT', 'PATCH'].includes(event.httpMethod) && event.body) {
+      const buffer = Buffer.from(event.body, 'utf8');
+      options.headers['Content-Length'] = buffer.length;
+    }
+    
+    const req = client.request(url, options, (res) => {
+      let body = '';
+      
+      res.on('data', (chunk) => {
+        body += chunk;
+      });
+      
+      res.on('end', () => {
+        console.log(`Response status: ${res.statusCode}`);
+        console.log('Response headers:', JSON.stringify(res.headers));
+        
+        // Special handling for Gomoku move endpoint
+        if (url.includes('/api/gomoku/move')) {
+          console.log('Gomoku move response status:', res.statusCode);
+          console.log('Gomoku move full response body:', body);
+          
+          // Handle non-200 responses for gomoku move endpoint
+          if (res.statusCode !== 200) {
+            console.error(`Error in Gomoku move response: ${body}`);
+          }
+        }
+        
+        // Copy all response headers
+        const responseHeaders = {
+          'Content-Type': res.headers['content-type'] || 'application/json',
+          // Always add CORS headers
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+        };
+        
+        // Copy other important headers from the backend
+        ['cache-control', 'etag', 'last-modified'].forEach(header => {
+          if (res.headers[header]) {
+            responseHeaders[header] = res.headers[header];
+          }
+        });
+        
+        // Log summary of response
+        if (body) {
+          const bodyPreview = body.length > 200 ? `${body.substring(0, 200)}...` : body;
+          console.log(`Response body preview: ${bodyPreview}`);
+        }
+        
+        // If we have a 4xx or 5xx response, make sure to include error details in the body
+        if (res.statusCode >= 400) {
+          console.error(`Error from API: ${res.statusCode}`);
+          try {
+            // Try to parse the body as JSON to extract error details
+            const errorBody = JSON.parse(body);
+            // Format the error response for the frontend
+            const errorResponse = {
+              error: `Error making ${normalizedPath.replace('/api/', '')}: ${res.statusCode}`,
+              message: errorBody.detail || errorBody.message || body,
+              status: res.statusCode
+            };
+            resolve({
+              statusCode: res.statusCode,
+              headers: responseHeaders,
+              body: JSON.stringify(errorResponse)
+            });
+          } catch (e) {
+            // If parsing fails, return the raw body
+            resolve({
+              statusCode: res.statusCode,
+              headers: responseHeaders,
+              body: JSON.stringify({
+                error: `Error making ${normalizedPath.replace('/api/', '')}: ${res.statusCode}`,
+                message: body,
+                status: res.statusCode
+              })
+            });
+          }
+        } else {
+          // Normal successful response
+          resolve({
+            statusCode: res.statusCode,
+            headers: responseHeaders,
+            body: body
+          });
+        }
+      });
+    });
+    
+    req.on('error', (e) => {
+      console.error(`Problem with request: ${e.message}`);
+      resolve({
+        statusCode: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+        },
+        body: JSON.stringify({ 
+          error: 'Error forwarding request to API',
+          message: e.message,
+          url: url,
+          method: event.httpMethod
+        }),
+      });
+    });
+    
+    // Send request body if present
+    if (event.body) {
+      req.write(event.body);
+    }
+    
+    req.end();
+  });
+};
