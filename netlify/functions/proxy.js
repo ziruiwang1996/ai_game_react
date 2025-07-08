@@ -2,8 +2,11 @@ const https = require('https');
 const http = require('http');
 
 exports.handler = async function(event, context) {
-  // The API endpoint we want to forward requests to
+  // The API endpoint we want to forward requests to - ensure it's accessible from Netlify's servers
   const API_ENDPOINT = 'http://3.89.251.26:8000';
+  
+  console.log('Netlify function invoked with path:', event.path);
+  console.log('Request headers:', JSON.stringify(event.headers));
   
   // Handle OPTIONS preflight requests immediately
   if (event.httpMethod === 'OPTIONS') {
@@ -28,14 +31,20 @@ exports.handler = async function(event, context) {
   // Handle empty paths and add /api prefix if needed
   let normalizedPath = path || '/';
   
-  // Handle gomoku routes specially - make sure to add /api prefix if not already there
-  if (normalizedPath === '/gomoku/move' || normalizedPath === '/gomoku/start') {
-    normalizedPath = `/api${normalizedPath}`;
-    console.log(`Special handling for gomoku endpoint: ${normalizedPath}`);
-  }
-  // For other paths that don't already have /api, add it
-  else if (!normalizedPath.startsWith('/api')) {
-    normalizedPath = `/api${normalizedPath}`;
+  // Always ensure the path starts with /api for the backend
+  if (!normalizedPath.startsWith('/api')) {
+    // Handle gomoku routes specially
+    if (normalizedPath === '/gomoku/move' || normalizedPath === '/gomoku/start') {
+      normalizedPath = `/api${normalizedPath}`;
+      console.log(`Special handling for gomoku endpoint: ${normalizedPath}`);
+    } 
+    // For other endpoints without /api prefix
+    else {
+      normalizedPath = `/api${normalizedPath}`;
+      console.log(`Adding /api prefix to path: ${normalizedPath}`);
+    }
+  } else {
+    console.log(`Path already has /api prefix: ${normalizedPath}`);
   }
   
   // Build query string
@@ -183,6 +192,14 @@ exports.handler = async function(event, context) {
     
     req.on('error', (e) => {
       console.error(`Problem with request: ${e.message}`);
+      console.error(`Failed URL: ${url}`);
+      console.error(`Method: ${event.httpMethod}`);
+      console.error(`Headers: ${JSON.stringify(headers)}`);
+      
+      if (event.body) {
+        console.error(`Request body: ${event.body.substring(0, 500)}`);
+      }
+      
       resolve({
         statusCode: 500,
         headers: {
@@ -192,8 +209,28 @@ exports.handler = async function(event, context) {
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS'
         },
         body: JSON.stringify({ 
-          error: 'Error forwarding request to API',
-          message: e.message,
+          error: 'Error connecting to API server',
+          message: `Failed to connect to backend server: ${e.message}. This could be due to CORS restrictions or the server being unavailable. Please ensure the API server at ${API_ENDPOINT} is running and accessible.`,
+          url: url,
+          method: event.httpMethod
+        }),
+      });
+    });
+    
+    // Add a timeout to the request
+    req.setTimeout(10000, () => {
+      console.error(`Request to ${url} timed out after 10s`);
+      resolve({
+        statusCode: 504,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+        },
+        body: JSON.stringify({ 
+          error: 'Request timed out',
+          message: 'The request to the API server timed out. Please try again later.',
           url: url,
           method: event.httpMethod
         }),

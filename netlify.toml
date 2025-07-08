@@ -5,6 +5,13 @@
 
 # Proxy API requests to our Netlify function
 [[redirects]]
+  from = "/.netlify/functions/proxy/*"
+  to = "/.netlify/functions/proxy/:splat"
+  status = 200
+  force = true
+
+# Handle API requests with /api prefix
+[[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/proxy/:splat"
   status = 200

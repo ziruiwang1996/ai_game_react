@@ -1,2 +1,6 @@
+# Handle API requests with both /api and direct netlify function paths
 /api/*  /.netlify/functions/proxy/:splat  200
+/.netlify/functions/proxy/*  /.netlify/functions/proxy/:splat  200
+
+# Handle client-side routing
 /* /index.html 200

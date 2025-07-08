@@ -29,9 +29,12 @@ export const getApiUrl = () => {
     return '/api';  // This will be handled by Nginx proxy
   }
   
-  // When deployed on Netlify
-  if (window.location.hostname.includes('netlify.app')) {
-    console.log('Detected Netlify production environment');
+  // When deployed on Netlify or any custom domain through Netlify
+  if (window.location.hostname.includes('netlify.app') || 
+      window.location.hostname !== 'localhost' && 
+      window.location.hostname !== '127.0.0.1' &&
+      window.location.hostname !== '3.89.251.26') {
+    console.log('Detected Netlify or custom domain environment');
     return '/.netlify/functions/proxy';
   }
   
@@ -73,7 +76,10 @@ export const fetchApi = async (endpoint, options = {}) => {
     
     const response = await fetch(url, {
       ...options,
-      headers
+      headers,
+      // Add these options to ensure cookies are sent and CORS issues are minimized
+      credentials: 'same-origin',
+      mode: 'cors'
     });
     
     console.log(`Response status from ${url}:`, response.status);
