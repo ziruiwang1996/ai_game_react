@@ -2,18 +2,24 @@ import React, {useState} from "react";
 import AnimView from "./AnimView";
 
 function RoombaHome() {
-    const [width, setWidth] = useState(null);
-    const [length, setLength] = useState(null);
-    const [maxPower, setMaxPower] = useState(null);
+    const [width, setWidth] = useState("");
+    const [length, setLength] = useState("");
+    const [maxPower, setMaxPower] = useState("");
     const [showGridView, setShowGridView] = useState(false);
     const [buttonText, setButtonText] = useState("Play");
 
     const handlePlayClick = () => {
         setShowGridView(false); // Unmount GridView
         setTimeout(() => {
-            if (maxPower < 2 * Math.max(width, length) + 1) {
+            const widthNum = Number(width);
+            const lengthNum = Number(length);
+            const maxPowerNum = Number(maxPower);
+            
+            if (!width || !length || !maxPower || widthNum <= 0 || lengthNum <= 0 || maxPowerNum <= 0) {
+                window.alert("Please enter valid positive numbers for all fields.");
+            } else if (maxPowerNum < 2 * Math.max(widthNum, lengthNum) + 1) {
                 window.alert("To guarantee a solution, try a larger power capacity.");
-            } else if (width < 3 || length < 3) {
+            } else if (widthNum < 3 || lengthNum < 3) {
                 window.alert("Ensure the room is large enough for Roomba to move around.");
             }
             else {
@@ -54,15 +60,15 @@ function RoombaHome() {
             </div>
             <div className="input-container">
                 <label htmlFor="rw">Room Width:</label>
-                <input id="rw" type="number" min="1" value={width} onChange={(event) => setWidth(Number(event.target.value))}/>
+                <input id="rw" type="number" min="1" value={width} onChange={(event) => setWidth(event.target.value)}/>
                 <label htmlFor="rl">Room Length:</label>
-                <input id="rl" type="number" min="1" value={length} onChange={(event) => setLength(Number(event.target.value))}/>
+                <input id="rl" type="number" min="1" value={length} onChange={(event) => setLength(event.target.value)}/>
                 <label htmlFor="pc">Power Capacity:</label>
-                <input id="pc" type="number" min="1" value={maxPower} onChange={(event) => setMaxPower(Number(event.target.value))}/>
+                <input id="pc" type="number" min="1" value={maxPower} onChange={(event) => setMaxPower(event.target.value)}/>
                 <button className="play-button" onClick={handlePlayClick}>{buttonText}</button>
             </div>
             {showGridView 
-                && ( <AnimView width={width} length={length} maxPower={maxPower}/> )}
+                && ( <AnimView width={Number(width)} length={Number(length)} maxPower={Number(maxPower)}/> )}
         </div>
     )
 }

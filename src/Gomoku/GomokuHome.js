@@ -2,20 +2,25 @@ import React, {useState, useEffect} from "react";
 import StateView from "./StateView";
 
 function GomokuHome() {
-    const [boardSize, setBoardSize] = useState(null);
-    const [winSize, setWinSize] = useState(null);
-    const [aiFirst, setAiFirst] = useState(null);
+    const [boardSize, setBoardSize] = useState("");
+    const [winSize, setWinSize] = useState("");
+    const [aiFirst, setAiFirst] = useState("");
     const [showStateView, setShowStateView] = useState(false);
     const [buttonText, setButtonText] = useState("Start Game");
 
     const handlePlayClick = () => {
         setShowStateView(false); 
         setTimeout(() => {
-            if (boardSize > 10) {
+            const boardSizeNum = Number(boardSize);
+            const winSizeNum = Number(winSize);
+            
+            if (!boardSize || !winSize || boardSizeNum <= 0 || winSizeNum <= 0) {
+                window.alert("Please enter valid positive numbers for board size and win size.");
+            } else if (boardSizeNum > 10) {
                 window.alert("Due to server limitations, this game only supports board size < 10.");
-            } else if (winSize > boardSize) {
+            } else if (winSizeNum > boardSizeNum) {
                 window.alert("The win size cannot be greater than the board size.");
-            } else if (aiFirst === null) {
+            } else if (!aiFirst) {
                 window.alert("Please set who goes first to start the game.");
             }
             else {
@@ -50,11 +55,11 @@ function GomokuHome() {
             </div>
             <div className="input-container">
                 <label htmlFor="bs">Board Size:</label>
-                <input id="bs" type="number" min="1"  value={boardSize} onChange={(event) => setBoardSize(Number(event.target.value))}/>
+                <input id="bs" type="number" min="1"  value={boardSize} onChange={(event) => setBoardSize(event.target.value)}/>
                 <label htmlFor="ws">Win Size:</label>
-                <input id="ws" type="number" min="1" value={winSize} onChange={(event) => setWinSize(Number(event.target.value))}/>
+                <input id="ws" type="number" min="1" value={winSize} onChange={(event) => setWinSize(event.target.value)}/>
                 <select value={aiFirst} onChange={(event)=>{setAiFirst(event.target.value)}}>
-                    <option value="" disabled selected hidden>Who Goes First</option>
+                    <option value="" disabled hidden>Who Goes First</option>
                     <option value="false">Player</option>
                     <option value="true">AI</option>
                 </select>
@@ -62,7 +67,7 @@ function GomokuHome() {
                 <button className="reset-button" onClick={() => {setShowStateView(false); setButtonText("Start Game");}}>Reset Game</button>
             </div>
             {showStateView 
-                && ( <StateView boardSize={boardSize} winSize={winSize} aiFirst={aiFirst}/> )}
+                && ( <StateView boardSize={Number(boardSize)} winSize={Number(winSize)} aiFirst={aiFirst === "true"}/> )}
         </div>
     )
 }

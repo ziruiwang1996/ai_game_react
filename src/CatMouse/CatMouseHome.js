@@ -2,15 +2,20 @@ import React, {useState} from "react";
 import CMAnimView from './CMAnimView';
 
 function CatMouseHome() {
-    const [width, setWidth] = useState(null);
-    const [length, setLength] = useState(null);
+    const [width, setWidth] = useState("");
+    const [length, setLength] = useState("");
     const [showAnimView, setShowAnimView] = useState(false);
     const [buttonText, setButtonText] = useState("Play");
 
     const handlePlayClick = () => {
         setShowAnimView(false);
         setTimeout(() => {
-            if (width <= 2 || length <= 2) {
+            const widthNum = Number(width);
+            const lengthNum = Number(length);
+            
+            if (!width || !length || widthNum <= 0 || lengthNum <= 0) {
+                window.alert("Please enter valid positive numbers for width and length.");
+            } else if (widthNum <= 2 || lengthNum <= 2) {
                 window.alert("Ensure the room is large enough for Liam and his toy to move around.");
             } else {
                 setShowAnimView(true);
@@ -47,13 +52,13 @@ function CatMouseHome() {
             </div>
             <div className="input-container">
                 <label htmlFor="w">Width:</label>
-                <input id="w" type="number" min="1" value={width} onChange={(event) => setWidth(Number(event.target.value))}/>
+                <input id="w" type="number" min="1" value={width} onChange={(event) => setWidth(event.target.value)}/>
                 <label htmlFor="l">Length:</label>
-                <input id="l" type="number" min="1" value={length} onChange={(event) => setLength(Number(event.target.value))}/>
+                <input id="l" type="number" min="1" value={length} onChange={(event) => setLength(event.target.value)}/>
                 <button className="play-button" onClick={handlePlayClick}>{buttonText}</button>
             </div>
             {showAnimView 
-                && ( <CMAnimView width={width} length={length}/> )}
+                && ( <CMAnimView width={Number(width)} length={Number(length)}/> )}
         </div>
     );
 }

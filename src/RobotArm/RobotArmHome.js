@@ -15,9 +15,13 @@ function RobotArmHome() {
         const targetDistance = Math.sqrt(Math.pow(targetCoords[0], 2) + Math.pow(targetCoords[1], 2));
 
         setTimeout( () => {
-            if (armsSum < targetDistance) {
-                window.alert("The target is out of reach. Ensure the arm’s total length is at least the distance to the target.");
-            } else if (iterations > 1000) {
+            const iterationsNum = Number(iterations);
+            
+            if (!arms || !target || !iterations || iterationsNum <= 0) {
+                window.alert("Please fill in all fields with valid values.");
+            } else if (armsSum < targetDistance) {
+                window.alert("The target is out of reach. Ensure the arm's total length is at least the distance to the target.");
+            } else if (iterationsNum > 1000) {
                 window.alert("Due to server limitations, this game only supports iterations < 1000.");
             } else {
                 setShowAnimView(true);
@@ -56,7 +60,7 @@ function RobotArmHome() {
                 <button className="play-button" onClick={handlePlayClick}>{buttonText}</button>
             </div>
             {showAnimView && arms && target
-                && ( <RobotAnimView arms={arms} target={target} iterations={iterations}/>)}
+                && ( <RobotAnimView arms={arms} target={target} iterations={Number(iterations)}/>)}
         </div>
     );
 }

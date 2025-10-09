@@ -18,9 +18,9 @@ export const getApiUrl = () => {
       console.log('Detected Netlify Dev environment');
       return '/.netlify/functions/proxy';
     }
-    // Default to direct backend URL for local development
+    // Default to direct backend URL for local development with HTTP instead of HTTPS to avoid cert issues
     console.log('Detected local development environment');
-    return 'https://3.89.251.26:8000';
+    return 'http://3.89.251.26:8000';
   }
   
   // In production with our Nginx setup
@@ -38,9 +38,14 @@ export const getApiUrl = () => {
     return '/.netlify/functions/proxy';
   }
   
-  // Fallback to direct API URL
-  console.log('Using fallback direct API URL');
-  return 'https://3.89.251.26:8000';
+  // Fallback to direct API URL - use HTTPS for production, HTTP for development
+  if (process.env.NODE_ENV === 'production') {
+    console.log('Using production HTTPS API URL');
+    return 'https://3.89.251.26:443';
+  } else {
+    console.log('Using development HTTP API URL');
+    return 'http://3.89.251.26:8000';
+  }
 };
 
 // Helper function to make API calls with proper headers
