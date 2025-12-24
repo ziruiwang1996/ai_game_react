@@ -108,87 +108,135 @@ exports.handler = async function(event, context) {
     }
     
     const req = client.request(url, options, (res) => {
-      let body = '';
+      // Handle binary data (images, etc.) vs text data
+      const isBinary = res.headers['content-type'] && 
+                       (res.headers['content-type'].includes('image/') || 
+                        res.headers['content-type'].includes('application/octet-stream'));
       
-      res.on('data', (chunk) => {
-        body += chunk;
-      });
-      
-      res.on('end', () => {
-        console.log(`Response status: ${res.statusCode}`);
-        console.log('Response headers:', JSON.stringify(res.headers));
-        
-        // Special handling for Gomoku move endpoint
-        if (url.includes('/api/gomoku/move')) {
-          console.log('Gomoku move response status:', res.statusCode);
-          console.log('Gomoku move full response body:', body);
-          
-          // Handle non-200 responses for gomoku move endpoint
-          if (res.statusCode !== 200) {
-            console.error(`Error in Gomoku move response: ${body}`);
-          }
-        }
-        
-        // Copy all response headers
-        const responseHeaders = {
-          'Content-Type': res.headers['content-type'] || 'application/json',
-          // Always add CORS headers
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS'
-        };
-        
-        // Copy other important headers from the backend
-        ['cache-control', 'etag', 'last-modified'].forEach(header => {
-          if (res.headers[header]) {
-            responseHeaders[header] = res.headers[header];
-          }
+      let body;
+      if (isBinary) {
+        // For binary data, collect chunks in a buffer array
+        const chunks = [];
+        res.on('data', (chunk) => {
+          chunks.push(chunk);
         });
         
-        // Log summary of response
-        if (body) {
-          const bodyPreview = body.length > 200 ? `${body.substring(0, 200)}...` : body;
-          console.log(`Response body preview: ${bodyPreview}`);
-        }
-        
-        // If we have a 4xx or 5xx response, make sure to include error details in the body
-        if (res.statusCode >= 400) {
-          console.error(`Error from API: ${res.statusCode}`);
-          try {
-            // Try to parse the body as JSON to extract error details
-            const errorBody = JSON.parse(body);
-            // Format the error response for the frontend
-            const errorResponse = {
-              error: `Error making ${normalizedPath.replace('/api/', '')}: ${res.statusCode}`,
-              message: errorBody.detail || errorBody.message || body,
-              status: res.statusCode
-            };
-            resolve({
-              statusCode: res.statusCode,
-              headers: responseHeaders,
-              body: JSON.stringify(errorResponse)
-            });
-          } catch (e) {
-            // If parsing fails, return the raw body
-            resolve({
-              statusCode: res.statusCode,
-              headers: responseHeaders,
-              body: JSON.stringify({
-                error: `Error making ${normalizedPath.replace('/api/', '')}: ${res.statusCode}`,
-                message: body,
-                status: res.statusCode
-              })
-            });
-          }
-        } else {
-          // Normal successful response
+        res.on('end', () => {
+          // Convert chunks to Buffer and then to base64 for Lambda response
+          const buffer = Buffer.concat(chunks);
+          body = buffer.toString('base64');
+          
+          console.log(`Response status: ${res.statusCode}`);
+          console.log('Response headers:', JSON.stringify(res.headers));
+          console.log(`Binary response (${res.headers['content-type']}) - size: ${buffer.length} bytes`);
+          
+          // Copy all response headers
+          const responseHeaders = {
+            'Content-Type': res.headers['content-type'] || 'application/octet-stream',
+            // Always add CORS headers
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+          };
+          
+          // Copy other important headers from the backend
+          ['cache-control', 'etag', 'last-modified', 'content-disposition'].forEach(header => {
+            if (res.headers[header]) {
+              responseHeaders[header] = res.headers[header];
+            }
+          });
+          
+          // Return binary response
           resolve({
             statusCode: res.statusCode,
             headers: responseHeaders,
-            body: body
+            body: body,
+            isBase64Encoded: true  // Tell Lambda this is base64 encoded
           });
-        }
-      });
+        });
+      } else {
+        // For text data, use string concatenation
+        let bodyStr = '';
+        res.on('data', (chunk) => {
+          bodyStr += chunk;
+        });
+        
+        res.on('end', () => {
+          console.log(`Response status: ${res.statusCode}`);
+          console.log('Response headers:', JSON.stringify(res.headers));
+          
+          // Special handling for Gomoku move endpoint
+          if (url.includes('/api/gomoku/move')) {
+            console.log('Gomoku move response status:', res.statusCode);
+            console.log('Gomoku move full response body:', bodyStr);
+            
+            // Handle non-200 responses for gomoku move endpoint
+            if (res.statusCode !== 200) {
+              console.error(`Error in Gomoku move response: ${bodyStr}`);
+            }
+          }
+          
+          // Copy all response headers
+          const responseHeaders = {
+            'Content-Type': res.headers['content-type'] || 'application/json',
+            // Always add CORS headers
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+          };
+          
+          // Copy other important headers from the backend
+          ['cache-control', 'etag', 'last-modified'].forEach(header => {
+            if (res.headers[header]) {
+              responseHeaders[header] = res.headers[header];
+            }
+          });
+          
+          // Log summary of response
+          if (bodyStr) {
+            const bodyPreview = bodyStr.length > 200 ? `${bodyStr.substring(0, 200)}...` : bodyStr;
+            console.log(`Response body preview: ${bodyPreview}`);
+          }
+          
+          // If we have a 4xx or 5xx response, make sure to include error details in the body
+          if (res.statusCode >= 400) {
+            console.error(`Error from API: ${res.statusCode}`);
+            try {
+              // Try to parse the body as JSON to extract error details
+              const errorBody = JSON.parse(bodyStr);
+              // Format the error response for the frontend
+              const errorResponse = {
+                error: `Error making ${normalizedPath.replace('/api/', '')}: ${res.statusCode}`,
+                message: errorBody.detail || errorBody.message || bodyStr,
+                status: res.statusCode
+              };
+              resolve({
+                statusCode: res.statusCode,
+                headers: responseHeaders,
+                body: JSON.stringify(errorResponse)
+              });
+            } catch (e) {
+              // If parsing fails, return the raw body
+              resolve({
+                statusCode: res.statusCode,
+                headers: responseHeaders,
+                body: JSON.stringify({
+                  error: `Error making ${normalizedPath.replace('/api/', '')}: ${res.statusCode}`,
+                  message: bodyStr,
+                  status: res.statusCode
+                })
+              });
+            }
+          } else {
+            // Normal successful response
+            resolve({
+              statusCode: res.statusCode,
+              headers: responseHeaders,
+              body: bodyStr
+            });
+          }
+        });
+      }
     });
     
     req.on('error', (e) => {
