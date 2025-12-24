@@ -5,12 +5,6 @@ export const getApiUrl = () => {
   console.log('Current hostname:', window.location.hostname);
   console.log('Current port:', window.location.port);
   
-  // Use environment variable if available
-  if (process.env.REACT_APP_API_URL) {
-    console.log('Using REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
-    return process.env.REACT_APP_API_URL;
-  }
-  
   // If we're in development mode (localhost)
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     // Check if we're using Netlify dev (port 8888 by default)
@@ -29,13 +23,16 @@ export const getApiUrl = () => {
     return '/api';  // This will be handled by Nginx proxy
   }
   
-  // When deployed on Netlify or any custom domain through Netlify
-  if (window.location.hostname.includes('netlify.app') || 
-      window.location.hostname !== 'localhost' && 
-      window.location.hostname !== '127.0.0.1' &&
-      window.location.hostname !== '3.89.251.26') {
-    console.log('Detected Netlify or custom domain environment');
+  // When deployed on Netlify - ALWAYS use proxy to avoid mixed content issues
+  if (window.location.hostname.includes('netlify.app')) {
+    console.log('Detected Netlify production environment - using proxy');
     return '/.netlify/functions/proxy';
+  }
+  
+  // Use environment variable if available (but only if not on Netlify)
+  if (process.env.REACT_APP_API_URL) {
+    console.log('Using REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
+    return process.env.REACT_APP_API_URL;
   }
   
   // Fallback: use Netlify proxy for production to avoid mixed content issues
