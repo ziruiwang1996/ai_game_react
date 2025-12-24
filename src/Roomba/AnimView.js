@@ -26,7 +26,10 @@ function AnimView(props) {
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error("Network response not ok");
+                return response.text().then(text => {
+                    console.error("API Error Response:", text);
+                    throw new Error(`API Error ${response.status}: ${text}`);
+                });
             }
             return response.json();
         })
