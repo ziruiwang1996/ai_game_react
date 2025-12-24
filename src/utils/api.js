@@ -38,10 +38,10 @@ export const getApiUrl = () => {
     return '/.netlify/functions/proxy';
   }
   
-  // Fallback to direct API URL - use HTTPS for production, HTTP for development
+  // Fallback: use Netlify proxy for production to avoid mixed content issues
   if (process.env.NODE_ENV === 'production') {
-    console.log('Using production HTTPS API URL');
-    return 'https://3.89.251.26:443';
+    console.log('Using Netlify proxy to avoid mixed content (HTTPS -> HTTP)');
+    return '/.netlify/functions/proxy';
   } else {
     console.log('Using development HTTP API URL');
     return 'http://3.89.251.26:8000';
