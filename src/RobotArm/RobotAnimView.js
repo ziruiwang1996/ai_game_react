@@ -10,7 +10,7 @@ function RobotAnimView(props) {
 
     useEffect(() => {
         setLoading(true);
-        fetch(`${API_URL}/api/robotarm/simulate`, {
+        fetch(`${API_URL}/robotarm/simulate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

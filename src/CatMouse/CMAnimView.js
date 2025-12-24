@@ -9,7 +9,7 @@ function CMAnimView(props) {
     const API_URL = getApiUrl();
     useEffect(() => {
         setLoading(true);
-        fetch(`${API_URL}/api/catmouse/simulate`, {
+        fetch(`${API_URL}/catmouse/simulate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

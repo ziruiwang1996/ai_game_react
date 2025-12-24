@@ -10,7 +10,7 @@ function AnimView(props) {
 
     useEffect(() => {
         setLoading(true);
-        fetch(`${API_URL}/api/roomba/pathfind`, {
+        fetch(`${API_URL}/roomba/pathfind`, {
             method : 'POST',
             headers: {
                 'Content-Type': 'application/json'
