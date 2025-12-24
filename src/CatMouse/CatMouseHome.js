@@ -15,8 +15,10 @@ function CatMouseHome() {
             
             if (!width || !length || widthNum <= 0 || lengthNum <= 0) {
                 window.alert("Please enter valid positive numbers for width and length.");
-            } else if (widthNum <= 2 || lengthNum <= 2) {
-                window.alert("Ensure the room is large enough for Liam and his toy to move around.");
+            } else if (widthNum < 3 || lengthNum < 3) {
+                window.alert("Grid dimensions must be at least 3x3.");
+            } else if (widthNum > 20 || lengthNum > 20) {
+                window.alert("Grid dimensions must not exceed 20x20.");
             } else {
                 setShowAnimView(true);
                 setButtonText("Play Again");

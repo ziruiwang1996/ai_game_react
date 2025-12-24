@@ -218,9 +218,9 @@ exports.handler = async function(event, context) {
       });
     });
     
-    // Add a timeout to the request
-    req.setTimeout(10000, () => {
-      console.error(`Request to ${url} timed out after 10s`);
+    // Add a timeout to the request - increased to 30s for long-running operations like catmouse
+    req.setTimeout(30000, () => {
+      console.error(`Request to ${url} timed out after 30s`);
       resolve({
         statusCode: 504,
         headers: {

@@ -15,22 +15,34 @@ function CMAnimView(props) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                grid_rows: props.width,
-                grid_cols: props.length
+                grid_rows: props.length,
+                grid_cols: props.width
             })
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error("Network response not ok");
+                return response.text().then(text => {
+                    console.error("API Error Response:", text);
+                    throw new Error(`API Error ${response.status}: ${text}`);
+                });
             }
             return response.json();
         })
         .then(data => {
-            return fetch(`${API_URL}${data.animation_url}`);
+            // Animation URL includes /api prefix, we need to remove it for proxy compatibility
+            const animationPath = data.animation_url.startsWith('/api') 
+                ? data.animation_url.substring(4)  // Remove '/api'
+                : data.animation_url;
+            
+            // Now fetch the animation using the animation_url from the JSON response
+            return fetch(`${API_URL}${animationPath}`);
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error("Failed to fetch animation");
+                return response.text().then(text => {
+                    console.error("Animation fetch error:", response.status, text);
+                    throw new Error(`Failed to fetch animation: ${response.status}`);
+                });
             }
             return response.blob();
         })
