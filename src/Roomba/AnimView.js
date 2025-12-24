@@ -34,12 +34,20 @@ function AnimView(props) {
             return response.json();
         })
         .then(data => {
+            // Animation URL includes /api prefix, we need to remove it for proxy compatibility
+            const animationPath = data.animation_url.startsWith('/api') 
+                ? data.animation_url.substring(4)  // Remove '/api'
+                : data.animation_url;
+            
             // Now fetch the animation using the animation_url from the JSON response
-            return fetch(`${API_URL}${data.animation_url}`);
+            return fetch(`${API_URL}${animationPath}`);
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error("Failed to fetch animation");
+                return response.text().then(text => {
+                    console.error("Animation fetch error:", response.status, text);
+                    throw new Error(`Failed to fetch animation: ${response.status}`);
+                });
             }
             return response.blob();
         })
